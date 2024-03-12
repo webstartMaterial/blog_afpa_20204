@@ -5,7 +5,12 @@
 {% block body %}
     <h1>Create new Article</h1>
 
-    {{ include('article/_form.html.twig') }}
+        <div class="row col-md-10 mx-auto">
 
-    <a href="{{ path('app_article_index') }}">back to list</a>
+            {{ include('article/_form.html.twig') }}
+
+            <a class="col-md-2 my-5 btn btn-dark text-white" href="{{ path('app_article_index') }}">back to list</a>
+
+        </div>
+
 {% endblock %}
