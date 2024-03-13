@@ -1,15 +1,21 @@
 {% extends 'base.html.twig' %}
 
-{% block title %} Hello HomeController! {% endblock %}
+{% block title %}
+	Hello HomeController!
+{% endblock %}
 
 {% block body %}
 
-    {# charger mes catégories #}
+	{# charger mes catégories #}
 	<div class="row p-5">
 
 		<ul class="col-4 list-group">
 			{% for category in categories %}
-				<li class="list-group-item"><a href="{{path('app_get_article_by_category', { id_category : category.id} )}}"> {{category.title}} </a></li>
+				<li class="list-group-item">
+					<a href="{{path('app_get_article_by_category', { id_category : category.id} )}}">
+						{{category.title}}
+					</a>
+				</li>
 			{% endfor %}
 		</ul>
 
@@ -17,7 +23,7 @@
 
 			{% for article in articles %}
 
-				<a href="{{path('app_article_show', { id : article.id })}}" >
+				<a href="{{path('app_article_show', { id : article.id })}}">
 					<div class="d-flex article p-3">
 
 						{% if article.picture is empty %}
@@ -28,18 +34,25 @@
 
 
 						<div class="col-md-8 d-flex flex-column ms-3">
-							<h3> {{article.title}} </h3>
-							<p> {{article.description}} </p>
+							<h3>
+								{{article.title}}
+							</h3>
+							<p>
+								{{article.description}}
+							</p>
 						</div>
 					</div>
 				</a>
 
 			{% endfor %}
 
+			<div class="navigation">
+				{{ knp_pagination_render(articles) }}
+			</div>
+
 		</div>
 
 	</div>
-
 
 
 {% endblock %}
