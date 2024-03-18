@@ -6,6 +6,7 @@ use App\Entity\Contact;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -37,6 +38,14 @@ class ContactType extends AbstractType
                 'row_attr' => ['class' => 'col-md-6', 'id' => '...'],
 
                 ])
+            ->add('email', EmailType::class, [
+                    'label' => 'Email',
+                    'attr' => [
+                        'placeholder' => 'Votre email'
+                    ],
+                    'row_attr' => ['class' => 'col-md-6', 'id' => '...'],
+    
+                ])
             ->add('object', ChoiceType::class, [
                     'label' => 'Sélectionnez un motif',
                     'choices'  => [
@@ -48,6 +57,8 @@ class ContactType extends AbstractType
                     'choice_attr' => [
                         'Veuillez choisir une valeur par défaut' => ['disabled' => true]
                     ],
+                    'row_attr' => ['class' => 'col-md-6', 'id' => '...'],
+
                 ])
             ->add('message', TextareaType::class, [
                     'label' => 'Votre message',
