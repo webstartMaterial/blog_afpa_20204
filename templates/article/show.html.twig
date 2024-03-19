@@ -5,12 +5,14 @@
 {% block body %}
     <h1>Article</h1>
 
+		{% include "flash.html.twig" %}
+
     <div class="row">
         <div class="d-flex flex-column align-items-center col-md-10 mx-auto justify-content-center">
 
             <h1> {{article.title}} </h1>
 
-            <img src="{{asset('build/images/' ~ article.picture )}}" alt="{{article.title}}" title="{{article.title}}">
+            <img src="{{asset('uploads/articles/' ~ article.picture )}}" alt="{{article.title}}" title="{{article.title}}">
 
             <p> {{article.description}} </p> 
 
@@ -22,6 +24,10 @@
 
 
         </div>
+
+            {% if app.user is not null  %}
+                {{ include('comment/index.html.twig') }}
+            {% endif %}
     </div>
 
 
