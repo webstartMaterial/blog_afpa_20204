@@ -8,6 +8,7 @@ use App\Form\ArticleType;
 use App\Form\CommentType;
 use App\Repository\ArticleRepository;
 use App\Repository\CommentRepository;
+use App\Service\ImageService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
@@ -30,7 +31,8 @@ class ArticleController extends AbstractController
     #[Route('/new', name: 'app_article_new', methods: ['GET', 'POST'])]
     public function new(Request $request,
     EntityManagerInterface $entityManager,
-    SluggerInterface $slugger): Response
+    ImageService $imageService
+    ): Response
     {
         $article = new Article();
         $form = $this->createForm(ArticleType::class, $article);
@@ -38,31 +40,8 @@ class ArticleController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-            $imageFile = $form->get('picture')->getData();
-
-            // this condition is needed because the 'brochure' field is not required
-            // so the PDF file must be processed only when a file is uploaded
-            if ($imageFile) {
-                $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
-                // this is needed to safely include the file name as part of the URL
-                $safeFilename = $slugger->slug($originalFilename);
-                $newFilename = $safeFilename.'-'.uniqid().'.'.$imageFile->guessExtension();
-
-                // Move the file to the directory where brochures are stored
-                try {
-                    $imageFile->move(
-                        $this->getParameter('article_picture_directory'),
-                        $newFilename
-                    );
-                } catch (FileException $e) {
-                    // ... handle exception if something happens during file upload
-                }
-
-                // updates the 'brochureFilename' property to store the PDF file name
-                // instead of its contents
-                $article->setPicture($newFilename);
-            }
-
+            $fileName = $imageService->copyImage("picture",$this->getParameter("article_picture_directory"),$form);
+            $article->setPicture($fileName);
             $entityManager->persist($article);
             $entityManager->flush();
 
@@ -114,12 +93,20 @@ class ArticleController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_article_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Article $article, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request,
+        Article $article,
+        EntityManagerInterface $entityManager,
+        ImageService $imageService): Response
     {
         $form = $this->createForm(ArticleType::class, $article);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
+            $fileName = $imageService->copyImage("picture",$this->getParameter("article_picture_directory"),$form);
+            $article->setPicture($fileName);
+
+            $entityManager->persist($article);
             $entityManager->flush();
 
 

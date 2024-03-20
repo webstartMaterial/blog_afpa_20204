@@ -41,10 +41,10 @@ class ArticleType extends AbstractType
                     ])
                 ],
             ])
-            ->add('date')
+            // ->add('date')
             ->add('category', EntityType::class, [
                 'class' => Category::class,
-                'choice_label' => 'id',
+                'choice_label' => 'title',
             ])
         ;
     }
