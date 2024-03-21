@@ -40,7 +40,7 @@ class ArticleCrudController extends AbstractCrudController
             ->setRequired(false),
             // ->hideWhenUpdating(),
             AssociationField::new('category'),
-            DateField::new('date'),
+            DateField::new('date')
         ];
     }
     
