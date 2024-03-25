@@ -19,7 +19,7 @@ class CartController extends AbstractController
 
         $carTotal = 0;
 
-        if(count($session->get('cart')) > 0) {
+        if(!is_null($session->get('cart')) && count($session->get('cart')) > 0) {
             for($i = 0; $i < count($session->get('cart')["id"]); $i++) {
                 $carTotal += (float) $session->get('cart')["price"][$i] * $session->get('cart')["quantity"][$i];
             }
