@@ -12,15 +12,26 @@ use Symfony\Component\Routing\Attribute\Route;
 class CartController extends AbstractController
 {
     #[Route('/cart', name: 'app_cart')]
-    public function index(): Response
+    public function index(Request $request): Response
     {
+
+        $session = $request->getSession();
+
+        $carTotal = 0;
+
+        if(count($session->get('cart')) > 0) {
+            for($i = 0; $i < count($session->get('cart')["id"]); $i++) {
+                $carTotal += (float) $session->get('cart')["price"][$i] * $session->get('cart')["quantity"][$i];
+            }
+        }   
+
         return $this->render('cart/index.html.twig', [
-            'cartItems' => [],
-            'cartTotal' => 100,
+            'cartItems' => $session->get('cart'),
+            'cartTotal' => $carTotal,
         ]);
     }
 
-    #[Route('/cart/{idProduct}', name: 'app_cart_add')]
+    #[Route('/cart/{idProduct}', name: 'app_cart_add', methods: ['POST'])]
     public function addProduct(Request $request, 
     ProductRepository $productRepository,
     int $idProduct): Response
@@ -69,5 +80,16 @@ class CartController extends AbstractController
             'cartItems' => $session->get('cart'),
             'cartTotal' => $carTotal,
         ]);
+    }
+
+    #[Route('/cart/delete', name: 'app_cart_delete', methods: ['GET'])]
+    public function deleteCart(Request $request): Response
+    {
+
+        $session = $request->getSession();
+        $session->set('cart', []);
+
+        return $this->redirectToRoute('app_cart');
+
     }
 }
