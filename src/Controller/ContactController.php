@@ -17,6 +17,7 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 class ContactController extends AbstractController
 {
     #[Route('/contact', name: 'app_contact')]
+    #[Route('/mes-contacts', name: 'app_contact')]
     public function index(
         Request $request,
         EntityManagerInterface $entityManager,
